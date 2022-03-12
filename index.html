@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Gastos</title>
+</head>
+<body>
+    <h1>Gastos</h1>
+    <form action="">
+        <select>
+            <option value="" disabled selected>Usuario</option>
+            <option value="nico">Nico</option>
+            <option value="rocio">Rocio</option>
+        </select>
+        <input type="text" placeholder="Producto">
+        <input type="text" placeholder="Precio">
+        <button id="ok">OK</button>
+    </form>
+    <div id="pay">
+        <p>Total: <span id="total"></span></p>
+        <p>A pagar: <span id="to-pay"></span></p>
+    </div>
+    <button id="show-button">Mostrar Compras</button>
+    <div id="purchases">
+        <table>
+        </table>
+    </div>
+    <div>
+        <button id="log-button">Log-in</button>
+        <button id="log-out-button">Log-out</button>
+    </div>
+    <form id="auth-form" action="">
+        <input type="email" placeholder="Mail">
+        <input type="password" placeholder="Password">
+        <button id="submit">Submit</button>
+    </form>
+    <script src="main.js" type="module"></script>
+</body>
+</html>
