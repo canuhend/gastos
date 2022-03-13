@@ -18,7 +18,7 @@ form {
 }
 
 form input {
-    width: 120px;
+    width: 80px;
     height: 25px;
 }
 
@@ -27,6 +27,10 @@ form input {
     flex-direction: column;
     gap: 5px;
     font-size: 20px;
+}
+
+button {
+    width: 80px;
 }
 
 #show-button {
@@ -54,10 +58,6 @@ tr {
     margin-left: 15px;
     border-radius: 50%;
     background-color: red;
-}
-
-#log-button {
-    width: 50px;
 }
 
 #auth-form {
