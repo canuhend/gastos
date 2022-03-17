@@ -2,7 +2,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.8/firebase-app.js";
 // import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"
 import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged} from "https://www.gstatic.com/firebasejs/9.6.8/firebase-auth.js";
-import {getFirestore, collection, setDoc, addDoc, getDocs, deleteDoc, doc} from "https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore.js";
+import {getFirestore, collection, setDoc, addDoc, getDocs, deleteDoc, doc, updateDoc} from "https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore.js";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -89,8 +89,6 @@ onAuthStateChanged(auth, (user) => {
 //-------------------APP----------------------
     let index = 0
     
-    let idToSave = 0
-
     let ok_button = document.getElementById('ok')
     
     let totalNode = document.getElementById('total')
@@ -104,7 +102,7 @@ onAuthStateChanged(auth, (user) => {
     let table = document.getElementsByTagName('table')[0]
 
 
-async function saveToDB(object, collect) {
+async function saveToDB(object, collect, idToSave) {
     try {
         // const docRef = await addDoc(collection(db, collect), object);
         await setDoc(doc(db, collect, idToSave.toString()), object);
@@ -131,6 +129,9 @@ function getFromDB() {
 
 async function runApp() {
     // let purchases = (await getFromDB()).docs.map( (elem) => elem.data())
+
+    let idToSave = (await getDocs(collection(db, "productIndex"))).docs.length == 0 ? 0 : parseInt((await getDocs(collection(db, "productIndex"))).docs[0].data().index)
+
     let purchases = [];
 
     async function getPurchasesArray() {
@@ -145,12 +146,10 @@ async function runApp() {
     updateTotal()
     updateToPay()
     purchases.forEach(element => {
-        updateTable(element.name, element.product, element.price)        
+        updateTable(element.name, element.product, element.price, element.date)        
     });    
 
-    function updateTable(name, product, price) {
-        let date = new Date()
-        let formatedDate = `${date.getDate()}/${date.getMonth()+1}/${parseInt(date.getYear()%100)} -`
+    function updateTable(name, product, price, formatedDate) {
         let tr = document.createElement('tr')
         tr.dataset.purchaseIndex = index;
         index++
@@ -192,13 +191,16 @@ async function runApp() {
     }
     
     async function addPurchase(name, product, price) {
-        await saveToDB({name: name, product: product, price: price}, "purchases")
-        // purchases = (await getFromDB()).docs.map( (elem) => elem.data())
+        let date = new Date()
+        let formatedDate = `${date.getDate()}/${date.getMonth()+1}/${parseInt(date.getYear()%100)}`
+        await saveToDB({name: name, product: product, price: price, date: formatedDate}, "purchases", idToSave)
+        await updateDoc(doc(db, "productIndex", "productIndex"), {index: idToSave+1});
+        idToSave = parseInt((await getDocs(collection(db, "productIndex"))).docs[0].data().index)
         purchases = []
         await getPurchasesArray()
         updateTotal()
         updateToPay()
-        updateTable(name, product, price)
+        updateTable(name, product, price, formatedDate)
     }
     
     function updateTotal() {
